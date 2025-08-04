@@ -51,7 +51,8 @@
   "author": "Previewer Team",
   "license": "MIT",
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "node-releases": "^2.0.19"
   },
   "engines": {
     "node": ">=18.0.0",

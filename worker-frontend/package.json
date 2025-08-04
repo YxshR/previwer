@@ -55,8 +55,11 @@
     "@types/node": "^22.10.2",
     "@types/react": "^19.0.2",
     "@types/react-dom": "^19.0.2",
+    "autoprefixer": "^10.4.21",
+    "browserslist": "^4.25.1",
     "eslint": "^9.17.0",
     "eslint-config-next": "15.4.5",
+    "node-releases": "^2.0.19",
     "tailwindcss": "^4",
     "typescript": "^5.7.2"
   }

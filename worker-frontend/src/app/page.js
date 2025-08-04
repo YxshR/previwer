@@ -23,6 +23,7 @@ import {
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import AnimatedCounter from '../components/AnimatedCounter';
+import WalletConnectionModal from '../components/WalletConnectionModal';
 // import { useQuery } from '@tanstack/react-query';
 // import axios from 'axios';
 // import toast from 'react-hot-toast'; // Temporarily disabled
@@ -62,6 +63,7 @@ export default function WorkerHomePage() {
   // Temporary wallet state - will be replaced with actual wallet integration later
   const [connected, setConnected] = useState(false);
   const [publicKey, setPublicKey] = useState(null);
+  const [showWalletModal, setShowWalletModal] = useState(false);
   const router = useRouter();
 
   // Mock stats for testing
@@ -70,7 +72,7 @@ export default function WorkerHomePage() {
 
   // Temporary connect wallet function
   const handleConnectWallet = () => {
-    alert('Wallet connection will be available soon!');
+    setShowWalletModal(true);
     // setConnected(true);
   };
 
@@ -611,6 +613,12 @@ export default function WorkerHomePage() {
           </motion.div>
         </div>
       </section>
+
+      {/* Wallet Connection Modal */}
+      <WalletConnectionModal
+        isOpen={showWalletModal}
+        onClose={() => setShowWalletModal(false)}
+      />
     </div>
   );
 }

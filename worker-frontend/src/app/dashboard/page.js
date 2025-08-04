@@ -4,11 +4,12 @@ import React, { useState, useEffect } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  DollarSign, 
-  Eye, 
-  Clock, 
-  CheckCircle, 
+import WalletConnectionModal from '../../components/WalletConnectionModal';
+import {
+  DollarSign,
+  Eye,
+  Clock,
+  CheckCircle,
   TrendingUp,
   Users,
   Star,
@@ -26,7 +27,8 @@ import {
   LogOut,
   Timer,
   Target,
-  Zap
+  Zap,
+  Wallet
 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -95,6 +97,7 @@ export default function WorkerDashboardPage() {
   const [videoPlaying, setVideoPlaying] = useState(false);
   const [videoWatched, setVideoWatched] = useState(false);
   const [showEarningsModal, setShowEarningsModal] = useState(false);
+  const [showWalletModal, setShowWalletModal] = useState(false);
 
   // Check authentication
   useEffect(() => {
@@ -255,14 +258,33 @@ export default function WorkerDashboardPage() {
   if (!connected) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">
-            Connect Your Wallet
+        <div className="text-center max-w-md mx-auto p-6">
+          <div className="w-20 h-20 bg-gradient-to-r from-secondary-500 to-accent-500 rounded-full flex items-center justify-center mx-auto mb-6">
+            <Wallet className="w-10 h-10 text-white" />
+          </div>
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">
+            Worker Dashboard
           </h1>
           <p className="text-gray-600 mb-6">
-            Please connect your wallet to access the worker dashboard
+            Connect your wallet to access your worker dashboard and start earning SOL by evaluating content.
           </p>
-          <WalletMultiButton />
+          <div className="space-y-4">
+            <button
+              onClick={() => setShowWalletModal(true)}
+              className="w-full bg-secondary-600 hover:bg-secondary-700 text-white font-medium py-3 px-6 rounded-lg transition-colors"
+            >
+              Connect Wallet
+            </button>
+            <p className="text-sm text-gray-500">
+              Wallet connection will be available soon! Click above to learn more.
+            </p>
+          </div>
+          
+          {/* Wallet Connection Modal */}
+          <WalletConnectionModal
+            isOpen={showWalletModal}
+            onClose={() => setShowWalletModal(false)}
+          />
         </div>
       </div>
     );
@@ -687,6 +709,12 @@ export default function WorkerDashboardPage() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Wallet Connection Modal */}
+      <WalletConnectionModal
+        isOpen={showWalletModal}
+        onClose={() => setShowWalletModal(false)}
+      />
     </div>
   );
 }
