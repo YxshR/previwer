@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Previewer - Content Evaluation Platform
 
 A comprehensive web application that connects content creators with real human evaluators through blockchain-secured payments. Users pay in Solana to get their marketing content (images, thumbnails, videos) evaluated by workers for clickability assessment.
@@ -398,3 +399,6 @@ The platform tracks comprehensive metrics:
 ---
 
 Built with ❤️ by the Previewer team. Empowering creators and workers through blockchain technology.
+=======
+# previwer
+>>>>>>> d7cdd8c242ad05f93d2c42ef3f2430539abb6cca
