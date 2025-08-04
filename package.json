@@ -1,0 +1,68 @@
+{
+  "name": "previewer-platform",
+  "version": "1.0.0",
+  "description": "Content evaluation platform with Solana payments and real human feedback",
+  "main": "index.js",
+  "scripts": {
+    "install:all": "npm run install:backend && npm run install:user && npm run install:worker",
+    "install:backend": "cd backend && npm install",
+    "install:user": "cd user-frontend && npm install",
+    "install:worker": "cd worker-frontend && npm install",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:user\" \"npm run dev:worker\"",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:user": "cd user-frontend && npm run dev",
+    "dev:worker": "cd worker-frontend && npm run dev",
+    "build": "npm run build:user && npm run build:worker",
+    "build:user": "cd user-frontend && npm run build",
+    "build:worker": "cd worker-frontend && npm run build",
+    "start": "concurrently \"npm run start:backend\" \"npm run start:user\" \"npm run start:worker\"",
+    "start:backend": "cd backend && npm start",
+    "start:user": "cd user-frontend && npm start",
+    "start:worker": "cd worker-frontend && npm start",
+    "db:generate": "cd backend && npx prisma generate",
+    "db:push": "cd backend && npx prisma db push",
+    "db:migrate": "cd backend && npx prisma migrate dev",
+    "db:reset": "cd backend && npx prisma migrate reset",
+    "db:studio": "cd backend && npx prisma studio",
+    "lint": "npm run lint:backend && npm run lint:user && npm run lint:worker",
+    "lint:backend": "cd backend && npm run lint",
+    "lint:user": "cd user-frontend && npm run lint",
+    "lint:worker": "cd worker-frontend && npm run lint",
+    "test": "npm run test:backend",
+    "test:backend": "cd backend && npm test",
+    "clean": "npm run clean:backend && npm run clean:user && npm run clean:worker",
+    "clean:backend": "cd backend && rm -rf node_modules",
+    "clean:user": "cd user-frontend && rm -rf node_modules .next",
+    "clean:worker": "cd worker-frontend && rm -rf node_modules .next",
+    "setup": "npm run install:all && npm run db:generate && npm run db:push"
+  },
+  "keywords": [
+    "solana",
+    "blockchain",
+    "content-evaluation",
+    "web3",
+    "cryptocurrency",
+    "nextjs",
+    "react",
+    "nodejs",
+    "prisma",
+    "ipfs"
+  ],
+  "author": "Previewer Team",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/previewer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/previewer/issues"
+  },
+  "homepage": "https://previewer.app"
+}

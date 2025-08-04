@@ -1,0 +1,171 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            Int       @id @default(autoincrement())
+  address       String    @unique
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  tasks         Task[]
+  payouts       Payouts[]
+  sessions      UserSession[]
+}
+
+model UserSession {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Worker {
+  id                  Int       @id @default(autoincrement())
+  address             String    @unique
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+  submissions         Submission[]
+  pending_amount      Int       @default(0) // amount in lamports (* 10^9)
+  locked_amount       Int       @default(0)
+  total_earned        Int       @default(0)
+  tasks_completed     Int       @default(0)
+  accuracy_score      Float     @default(0.0)
+  sessions            WorkerSession[]
+  withdrawals         WorkerWithdrawal[]
+}
+
+model WorkerSession {
+  id        Int      @id @default(autoincrement())
+  workerId  Int
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  worker    Worker   @relation(fields: [workerId], references: [id], onDelete: Cascade)
+}
+
+model WorkerWithdrawal {
+  id          Int       @id @default(autoincrement())
+  workerId    Int
+  amount      Int
+  signature   String
+  status      TxnStatus @default(Processing)
+  createdAt   DateTime  @default(now())
+  processedAt DateTime?
+  worker      Worker    @relation(fields: [workerId], references: [id])
+}
+
+model Task {
+  id           Int         @id @default(autoincrement())
+  title        String      @default("Select the most clickable content")
+  serviceType  ServiceType
+  options      Option[]
+  user_id      Int
+  signature    String
+  amount       Int         // Total amount paid by user in lamports
+  reviewCount  Int         // Number of reviews requested (200, 500, etc.)
+  done         Boolean     @default(false)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  completedAt  DateTime?
+  user         User        @relation(fields: [user_id], references: [id])
+  submissions  Submission[]
+  results      TaskResult[]
+}
+
+model Option {
+  id          Int        @id @default(autoincrement())
+  image_url   String?    // For images and thumbnails
+  video_url   String?    // For videos
+  ipfs_hash   String?    // IPFS hash for decentralized storage
+  file_type   FileType
+  task_id     Int
+  task        Task       @relation(fields: [task_id], references: [id], onDelete: Cascade)
+  submissions Submission[]
+  results     OptionResult[]
+}
+
+model Submission {
+  id         Int      @id @default(autoincrement())
+  worker_id  Int
+  worker     Worker   @relation(fields: [worker_id], references: [id])
+  option_id  Int
+  option     Option   @relation(fields: [option_id], references: [id])
+  task_id    Int
+  task       Task     @relation(fields: [task_id], references: [id])
+  amount     Int      // Amount earned for this submission
+  createdAt  DateTime @default(now())
+  
+  @@unique([worker_id, task_id])
+}
+
+model TaskResult {
+  id        Int      @id @default(autoincrement())
+  task_id   Int
+  task      Task     @relation(fields: [task_id], references: [id])
+  results   OptionResult[]
+  createdAt DateTime @default(now())
+  
+  @@unique([task_id])
+}
+
+model OptionResult {
+  id           Int        @id @default(autoincrement())
+  option_id    Int
+  option       Option     @relation(fields: [option_id], references: [id])
+  task_result_id Int
+  taskResult   TaskResult @relation(fields: [task_result_id], references: [id])
+  vote_count   Int        @default(0)
+  rank         Int        // 1st, 2nd, 3rd place
+  percentage   Float      // Percentage of votes received
+}
+
+model Payouts {
+  id            Int       @id @default(autoincrement())
+  user_id       Int
+  user          User      @relation(fields: [user_id], references: [id])
+  amount        Int
+  signature     String
+  status        TxnStatus @default(Processing)
+  createdAt     DateTime  @default(now())
+  processedAt   DateTime?
+}
+
+model SystemStats {
+  id                    Int      @id @default(autoincrement())
+  total_workers         Int      @default(0)
+  active_workers        Int      @default(0)
+  total_tasks_completed Int      @default(0)
+  total_earnings_paid   Int      @default(0)
+  updatedAt            DateTime @updatedAt
+}
+
+enum ServiceType {
+  MARKETING_IMAGES
+  YOUTUBE_THUMBNAILS
+  VIDEOS
+}
+
+enum FileType {
+  IMAGE
+  VIDEO
+}
+
+enum TxnStatus {
+  Processing
+  Success
+  Failure
+}
